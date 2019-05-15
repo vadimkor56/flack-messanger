@@ -2,6 +2,7 @@
 
 It is a simple messanger where you can send text messages, files and create channels.
 
+
 Files:
 - app.py - flask application with flask-socketio
 - templates/index.html - main page with css and js included
