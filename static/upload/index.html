@@ -1,0 +1,1167 @@
+<!doctype html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+          integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <link rel="icon" href="{{ url_for('static', filename="logo.png") }}" type="image/x-icon">
+
+    <title>Flack</title>
+
+    <style>
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        * {
+            -webkit-overflow-scrolling: touch;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        nav {
+            position: fixed;
+            left: 0;
+            top: 0px;
+        }
+
+        #main-div {
+            border-top: 2px solid #EDEEF0;
+            position: fixed;
+            left: 0;
+            top: 56px;
+            overflow-x: hidden;
+            height: 600px;
+            width: 100%;
+            padding: 0;
+            background-color: #FFFFFF;
+
+        }
+
+        #message-input {
+            position: absolute;
+            top: 10px;
+            width: 92%;
+            left: 4%;
+            right: 4%;
+        }
+
+        #messages {
+            overflow-y: scroll;
+            height: 530px;
+            margin-top: 0px;
+
+            padding-left: 1em;
+            padding-right: 1em;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .message-wrapper {
+            background-color: #CCE4FD;
+            padding: 5px 20px;
+            padding-left: 20px;
+            border-radius: 1.5em;
+            max-width: 70%;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            display: inline-block;
+            text-align: left;
+        }
+
+        .msg-other {
+            background-color: #ECEDF1;
+        }
+
+
+        .message-wrapper p {
+            margin-bottom: 3px;
+        }
+
+        .msg-connect {
+            padding: 10px;
+            width: 100%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        .input-wrapper {
+            position: relative;
+            bottom: 2px;
+            height: 60px;
+            width: 100%;
+            background-color: #FAFBFC;
+            left: 2.5px;
+        }
+
+        .msg-row {
+            margin: 2px 0;
+        }
+
+        .message-date {
+            white-space: nowrap;
+            margin-left: 5px;
+            font-size: 70%;
+
+            color: grey;
+        }
+
+
+        #channels-div {
+            border-right: 1px solid #EDEEF0;
+        }
+
+
+        .wrapper {
+            position: relative;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+
+        }
+
+        #message {
+            border-radius: 2em;
+        }
+
+        .send-btn, .attach-btn {
+            border: none;
+            width: 50px;
+        }
+
+        .attach-btn {
+            color: rgba(0, 13, 49, 0.34);
+        }
+
+
+        .send-btn:hover, .attach-btn:hover {
+            background-color: #FAFBFC;
+            color: #0aceff;
+        }
+
+        .send-btn:focus, .attach-btn:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .send-btn:active, .attach-btn:active {
+            background-color: #FAFBFC !important;
+        }
+
+        .image-upload > input {
+            display: none;
+        }
+
+        .image-upload label {
+            cursor: pointer;
+        }
+
+        .menu {
+            border-top: 2px solid #EDEEF0;
+            position: fixed;
+            left: 0;
+            top: 56px;
+            z-index: 99;
+            width: 30%;
+            height: 100vh;
+            display: flex;
+
+            justify-content: center;
+            background-color: #fff;
+            transition: 0.5s;
+        {#transform: translateX(-100%);#}
+        }
+
+        .menu_active {
+            transform: translateX(-100%);
+        }
+
+        .menu-list {
+            height: 50%;
+
+        }
+
+        .public-channels {
+            width: 100%;
+            padding: 10px;
+        }
+
+        #public-channels {
+            height: 30%;
+            overflow: auto;
+        }
+
+        h5 {
+            padding: 5px;
+            border-bottom: 1px solid grey;
+        }
+
+        .menu-list a {
+            text-decoration: none;
+            text-transform: uppercase;
+            font-weight: 900;
+        }
+
+        .menu-btn {
+            width: 30px;
+            height: 30px;
+            position: absolute;
+            right: -35px;
+            top: 10px;
+            display: none;
+
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .content {
+            transition: 0.5s;
+            position: relative;
+            right: -15%;
+            z-index: 0;
+            width: 71.5%;
+        }
+
+        .content_active {
+            transform: translateX(-30%);
+        }
+
+        body.modal-open .elem-blur {
+            -webkit-filter: blur(3px);
+            -moz-filter: blur(3px);
+            -o-filter: blur(3px);
+            -ms-filter: blur(3px);
+            filter: blur(3px);
+        }
+
+        #username-btn {
+            background-color: #1E64A1;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            margin-bottom: 10px;
+
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        .alert {
+            display: none;
+        }
+
+        .files {
+            position: absolute;
+            bottom: 62px;
+            z-index: 10;
+            left: 25px;
+            padding: 10px;
+            border-top-left-radius: 1em;
+            border-top-right-radius: 1em;
+            font-weight: 700;
+        {#background-color: rgba(134, 248, 139, 0.9);#} background-color: rgba(159, 248, 162, 0.7);
+            display: none;
+        }
+
+        #progress-wrp {
+            border: 1px solid #0099CC;
+            padding: 1px;
+            position: relative;
+            height: 30px;
+            border-radius: 3px;
+            margin: 10px;
+            text-align: left;
+            background: #fff;
+            box-shadow: inset 1px 3px 6px rgba(0, 0, 0, 0.12);
+        }
+
+        #progress-wrp .progress-bar {
+            height: 100%;
+            border-radius: 3px;
+            background-color: #f39ac7;
+            width: 0;
+            box-shadow: inset 1px 1px 10px rgba(0, 0, 0, 0.11);
+        }
+
+        #progress-wrp .status {
+            top: 3px;
+            left: 50%;
+            position: absolute;
+            display: inline-block;
+            color: #000000;
+        }
+
+        .msg-image {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        #load-img {
+            display: none;
+        }
+
+        .add-public-channel {
+            float: right;
+        }
+
+        .channel {
+            border-radius: 3px;
+            cursor: pointer;
+            margin: 4px 0px;
+            padding: 5px;
+
+        }
+
+        .channel:hover {
+            background-color: #dfe6e9;
+        }
+
+        .channel-active {
+            background-color: #1E64A2;
+            color: white;
+        }
+
+        .channel-active:hover {
+            background-color: #1E64A2;
+            color: white;
+        }
+
+        #channel-input-wrapper {
+            border-bottom: 1px solid grey;
+            padding-bottom: 8px;
+        }
+
+
+        @media (max-width: 576px) {
+            #username-btn {
+                top: 0;
+            }
+        }
+
+
+        @media (max-width: 768px) {
+            .menu-btn {
+                display: block;
+            }
+
+            .menu {
+                transform: translateX(-100%);
+            }
+
+            .menu_active {
+                transform: translateX(0%);
+            }
+
+            .content {
+                margin: 0;
+                padding: 0;
+                right: 0;
+                left: -0.25em;
+                width: 100%;
+            }
+
+            .content_active {
+                transform: translateX(70%);
+            }
+
+            .menu {
+                width: 70%;
+            }
+        }
+    </style>
+
+
+</head>
+<body>
+
+<div class="container d-none">
+    <div class="my-5 mx-auto text-center">
+        <button class="btn btn-dark btn-lg" data-toggle="modal" data-target="#username-form">Open</button>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="username-form" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalLabel">Welcome to <i class="far fa-comment-dots ml-2"></i>
+                    Flack!</h2>
+            </div>
+            <div class="modal-body">
+                <div id="contact-form">
+                    <div class="form-group">
+                        <p>Please type in your username to start chating:</p>
+                        <input id="username-input" class="form-control" name="name" required type="text"
+                               placeholder="Your username">
+                        <button id="start-btn" class="btn btn-success mt-2">Start</button>
+                    </div>
+
+                </div>
+                <div class="username-alert alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Please fill in your username</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="user-exists-alert alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Sorry, this username is already taken</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container d-none">
+    <div class="my-5 mx-auto text-center">
+        <button class="btn btn-dark btn-lg" data-toggle="modal" data-target="#change-username-form">Open</button>
+    </div>
+</div>
+
+<div id="change-username-form" class="modal fade" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel1"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Changing username</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Please type in your new username to start chating:</p>
+                <div id="change-contact-form">
+                    <div class="form-group">
+                        <input id="change-username-input" class="form-control" name="name1" required type="text"
+                               placeholder="Your new username">
+                        <button id="change-btn" class="btn btn-success mt-2">Change</button>
+                    </div>
+                </div>
+                <div class="change-username-alert alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Please fill in your username</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="change-user-exists-alert alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Sorry, this username is already taken</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light elem-blur">
+    <a class="navbar-brand" href="#">
+        <i class="far fa-comment-dots"></i> Flack
+    </a>
+    <div class="form-inline my-2 my-lg-0">
+        <button id="username-btn" class="btn btn-1 btn-primary my-2 my-sm-0"></button>
+    </div>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+    </div>
+</nav>
+
+<div id="main-div" class="container-fluid wrapper elem-blur">
+    <div id="channels-div" class="menu">
+        <button class="menu-btn btn "><i class="fas fa-ellipsis-v"></i></button>
+        {#        <nav class="menu-list">#}
+        {#            <a>Test</a>#}
+        {#            <a id="test">Test</a>#}
+        {#            <a>Test</a>#}
+        {#            <a>Test</a>#}
+        {#        </nav>#}
+        <div class="public-channels">
+            <button class="add-public-channel btn"><i class="fas fa-plus-square"></i></button>
+            <h5>Public channels</h5>
+            <div id="channel-input-wrapper" class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">#</div>
+                </div>
+                <input type="text" class="form-control" id="public-channel-input" placeholder="New channel">
+            </div>
+
+            <div id="public-channels">
+                <h6 class="channel channel-active">#general</h6>
+            </div>
+        </div>
+    </div>
+
+    <div class="content">
+        <div id="messages" class="text-center"></div>
+        <div class="files">
+            <button id="close-files" type="button" class="close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+
+            <img id="load-img" width="30px" src="{{ url_for('static', filename="loading.gif") }}">
+
+            <div class="docs"></div>
+        </div>
+
+        <div class="input-wrapper">
+            <div id="message-input" class="form-group d-flex justify-content-center">
+                <button class="attach-btn form-control btn btn-outline-primary text-center">
+                    <div class="image-upload">
+                        <label for="file-input">
+                            <i class="fas fa-paperclip"></i>
+                        </label>
+
+                        <input id="file-input" type="file" multiple/>
+                    </div>
+                </button>
+                <input id="message" class="form-control" type="text"
+                       placeholder="Your message">
+                <button class="send-btn form-control btn btn-outline-primary text-center"><i
+                        class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+<script src='https://cdn.rawgit.com/admsev/jquery-play-sound/master/jquery.playSound.js'></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+        var height = window.innerHeight - 56;
+        $("#main-div").css('height', height);
+        height -= 64;
+        $("#messages").css('height', height);
+
+
+        //localStorage.clear();
+
+        if (!localStorage.getItem('currentChannel')) {
+            localStorage.setItem('currentChannel', "#general");
+        }
+
+
+        if (!localStorage.getItem('username') || localStorage.getItem('username') === "") {
+            $('#username-form').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+        } else {
+            $("#username-btn").html(localStorage.getItem('username'));
+        }
+
+
+        $("#username-btn").on('click', function () {
+
+            $("#change-username-form").modal('show');
+        });
+
+        $("#username-btn").hover(function () {
+            $(this).html("Change");
+        }, function () {
+            $(this).html(localStorage.getItem('username'));
+        });
+
+
+        var socket = io.connect("/");
+
+        $("#start-btn").on('click', function () {
+            if ($("#username-input").prop("value") === "") {
+                $(".username-alert").css("display", "block");
+            } else {
+                // Initialize new request
+                const request = new XMLHttpRequest();
+                request.open('POST', '/check_user');
+
+                // Callback function for when request completes
+                request.onload = () => {
+
+                    // Extract JSON data from request
+                    const data = JSON.parse(request.responseText);
+
+                    // Update the result div
+                    if (!data.exists) {
+                        $(".username-alert").css("display", "none");
+                        localStorage.setItem('username', $("#username-input").val());
+                        $("#username-btn").html(localStorage.getItem('username'));
+                        $('#username-form').modal('hide');
+
+                        let date = new Date();
+                        let day = date.getDate();
+                        let month = months[date.getMonth()];
+                        let hours = date.getHours();
+                        let minutes = date.getMinutes();
+                        if (minutes / 10 < 1) {
+                            date = `${day} ${month}  ${hours}:0${minutes}`;
+                        } else {
+                            date = `${day} ${month}  ${hours}:${minutes}`;
+                        }
+
+                        socket.emit('send message', {
+                            "connection": true,
+                            "channel": localStorage.getItem('currentChannel'),
+                            "username": localStorage.getItem('username'),
+                            "date": date
+                        });
+
+                    } else {
+                        $(".user-exists-alert").css("display", "block");
+                    }
+                }
+
+                // Add data to send with request
+                const data = new FormData();
+                data.append('username', $("#username-input").val());
+
+                // Send request
+                request.send(data);
+            }
+        });
+
+        $("#change-btn").on('click', function () {
+            if ($("#change-username-input").prop("value") === "") {
+                $(".change-username-alert").css("display", "block");
+            } else {
+                // Initialize new request
+                const request = new XMLHttpRequest();
+                request.open('POST', '/check_user');
+
+                // Callback function for when request completes
+                request.onload = () => {
+
+                    // Extract JSON data from request
+                    const data = JSON.parse(request.responseText);
+
+                    // Update the result div
+                    if (!data.exists) {
+                        let old_username = localStorage.getItem('username');
+                        $(".change-username-alert").css("display", "none");
+                        localStorage.setItem('username', $("#change-username-input").val());
+                        $("#username-btn").html(localStorage.getItem('username'));
+                        $('#change-username-form').modal('hide');
+
+                        let date = new Date();
+                        let day = date.getDate();
+                        let month = months[date.getMonth()];
+                        let hours = date.getHours();
+                        let minutes = date.getMinutes();
+                        if (minutes / 10 < 1) {
+                            date = `${day} ${month}  ${hours}:0${minutes}`;
+                        } else {
+                            date = `${day} ${month}  ${hours}:${minutes}`;
+                        }
+
+                        socket.emit('change username', {
+                            "connection": false,
+                            "channel": localStorage.getItem('currentChannel'),
+                            "new_username": localStorage.getItem('username'),
+                            "old_username": old_username,
+                            "date": date
+                        });
+
+                    } else {
+                        $(".change-user-exists-alert").css("display", "block");
+                    }
+                }
+
+                // Add data to send with request
+                const data = new FormData();
+                data.append('username', $("#change-username-input").val());
+
+                // Send request
+                request.send(data);
+            }
+        });
+
+        socket.on('connect', function () {
+            let date = new Date();
+            let day = date.getDate();
+            let month = months[date.getMonth()];
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            if (minutes / 10 < 1) {
+                date = `${day} ${month}  ${hours}:0${minutes}`;
+            } else {
+                date = `${day} ${month}  ${hours}:${minutes}`;
+            }
+
+            socket.emit('send message', {
+                "connection": true,
+                "channel": localStorage.getItem("currentChannel"),
+                "username": localStorage.getItem('username'),
+                "date": date
+            });
+
+            socket.emit('get all channels', {
+                "username": localStorage.getItem('username')
+            });
+        });
+
+        socket.on('channel added', function (msg) {
+            if (msg['channel'] !== "#general") {
+                $("#public-channels").append(`<h6 class="channel">${msg['channel']}</h6>`);
+            }
+        });
+
+        socket.on('channels', function (msg) {
+            $("#public-channels").html(`<h6 class="channel">#general</h6>`);
+
+            msg['channels'].forEach(function (channel) {
+                if (channel !== "#general") {
+                    $("#public-channels").append(`<h6 class="channel">${channel}</h6>`);
+                }
+            });
+
+            $("h6").each(function () {
+                if ($(this).html() == localStorage.getItem('currentChannel')) {
+                    $(this).addClass("channel-active");
+                }
+            });
+
+            socket.emit('get channel story', {
+                "channel": localStorage.getItem("currentChannel"),
+                "username": localStorage.getItem('username'),
+            });
+        });
+
+
+        socket.on('announce message', function (msg) {
+
+            if (msg['channel'] && msg['channel'] != localStorage.getItem('currentChannel')) {
+                var audio = new Audio("{{ url_for('static', filename="sound.mp3") }}");
+                audio.play();
+
+                return;
+            }
+
+            if (!document.hasFocus()) {
+                if (msg['username'] && msg['username'] !== localStorage.getItem('username')) {
+                    var audio = new Audio("{{ url_for('static', filename="sound.mp3") }}");
+                    audio.play();
+                }
+                {#$.playSound("{{ url_for('static', filename="sound.mp3") }}"); // buffers automatically when created#}
+            }
+            if (msg['messages']) {
+                if (msg['messages'][0] && msg['messages'][0]['channel'] == localStorage.getItem('currentChannel')) {
+                    $("#messages").html("");
+                }
+                messages = msg['messages'];
+                messages.forEach(function (msg_) {
+                    if (msg_['channel'] == localStorage.getItem('currentChannel')) {
+                        if (msg_["connection"]) {
+                            $("#messages").append(`<div class="row msg-row justify-content-center"><div class="msg-connect">
+                                                    <p><b>${msg_['username']}</b> ${msg_['text']}<span class="message-date">${msg_['date']}</span></p></div></div>`);
+                        } else {
+                            let files_html = "<div class='msg-files'>"
+                            for (let filename in msg_['files']) {
+                                if ($.inArray(filename.split('.').pop().toLowerCase(), ['png', 'jpg', 'jpeg', 'gif', 'svg']) != -1) {
+                                    files_html += `<p><a href="${encodeURI(msg_['files'][filename])}" target="_blank"><img class="msg-image" src="${encodeURI(msg_['files'][filename])}" alt="${filename}"></a></p>`;
+                                } else if ($.inArray(filename.split('.').pop().toLowerCase(), ['mov', 'avi', 'mp4', 'webm']) != -1) {
+                                    files_html += `<div class="text-center"><video width="80%" controls><source src="${encodeURI(msg_['files'][filename])}" type="video/mp4">Your browser does not support the video tag.</video></div>`;
+                                } else {
+                                    files_html += `<p><a href="${encodeURI(msg_['files'][filename])}" target="_blank"><i class="fas fa-file-alt"></i> ${filename}</a></p>`;
+                                }
+                            }
+                            files_html += "</div>";
+                            if (msg_['username'] == localStorage.getItem('username')) {
+                                $("#messages").append(`<div class="row msg-row justify-content-end"><div class="message-wrapper">
+                                                    <p><b>${msg_['username']}</b><span class="message-date">${msg_['date']}</span></p>${msg_['text']}${files_html}</div></div>`);
+                            } else {
+                                $("#messages").append(`<div class="row msg-row"><div class="message-wrapper msg-other">
+                                                    <p><b>${msg_['username']}</b><span class="message-date">${msg_['date']}</span></p>${msg_['text']}${files_html}</div></div>`);
+                            }
+
+                        }
+                    }
+                });
+
+            } else if (msg["connection"]) {
+                console.log(msg['channel']);
+                $("#messages").append(`<div class="row msg-row justify-content-center"><div class="msg-connect">
+                                                    <p><b>${msg['username']}</b> ${msg['text']}<span class="message-date">${msg['date']}</span></p></div></div>`);
+            } else {
+                console.log(msg['channel']);
+                let files_html = "<div class='msg-files'>"
+                for (let filename in msg['files']) {
+                    if ($.inArray(filename.split('.').pop().toLowerCase(), ['png', 'jpg', 'jpeg', 'gif', 'svg']) != -1) {
+                        files_html += `<p><a href="${encodeURI(msg['files'][filename])}" target="_blank"><img class="msg-image" src="${encodeURI(msg['files'][filename])}" alt="${filename}"></a></p>`;
+                    } else if ($.inArray(filename.split('.').pop().toLowerCase(), ['mov', 'avi', 'mp4', 'webm']) != -1) {
+                        files_html += `<div class="text-center"><video width="80%" controls><source src="${encodeURI(msg['files'][filename])}" type="video/mp4">Your browser does not support the video tag.</video></div>`;
+                    } else {
+                        files_html += `<p><a href="${encodeURI(msg['files'][filename])}" target="_blank"><i class="fas fa-file-alt"></i> ${filename}</a></p>`;
+                    }
+                }
+                files_html += "</div>";
+                if (msg['username'] == localStorage.getItem('username')) {
+                    $("#messages").append(`<div class="row msg-row justify-content-end"><div class="message-wrapper">
+                                                    <p><b>${msg['username']}</b><span class="message-date">${msg['date']}</span></p>${msg['text']}${files_html}</div></div>`);
+                } else {
+                    $("#messages").append(`<div class="row msg-row"><div class="message-wrapper msg-other">
+                                                    <p><b>${msg['username']}</b><span class="message-date">${msg['date']}</span></p>${msg['text']}${files_html}</div></div>`);
+                }
+
+            }
+
+            var objDiv = document.getElementById("messages");
+            objDiv.scrollTop = objDiv.scrollHeight;
+
+        });
+
+        var file_counter = 0;
+        var cntr = 0
+        var numOfFiles = 0;
+        var filenames = []
+        var Upload = function (file) {
+            this.file = file;
+        };
+
+        Upload.prototype.getType = function () {
+            return this.file.type;
+        };
+        Upload.prototype.getSize = function () {
+            return this.file.size;
+        };
+        Upload.prototype.getName = function () {
+            return this.file.name;
+        };
+        Upload.prototype.doUpload = function () {
+            var that = this;
+            var formData = new FormData();
+
+            // add assoc key values, this will be posts values
+            formData.append("file", this.file, this.getName());
+            formData.append("upload_file", true);
+
+            $.ajax({
+                type: "POST",
+                url: "/send_file",
+                xhr: function () {
+                    var myXhr = $.ajaxSettings.xhr();
+                    if (myXhr.upload) {
+                        myXhr.upload.addEventListener('progress', that.progressHandling, false);
+                    }
+                    return myXhr;
+                },
+                success: function (data) {
+                    console.log(data['success']);
+                    file_counter++;
+
+                    if (file_counter == numOfFiles) {
+
+                        let user = localStorage.getItem('username');
+                        let date = new Date();
+                        let day = date.getDate();
+                        let month = months[date.getMonth()];
+                        let hours = date.getHours();
+                        let minutes = date.getMinutes();
+
+                        if (minutes / 10 < 1) {
+                            date = `${day} ${month}  ${hours}:0${minutes}`;
+                        } else {
+                            date = `${day} ${month}  ${hours}:${minutes}`;
+                        }
+
+                        socket.emit('send message', {
+                            "username": localStorage.getItem('username'),
+                            "text": $("#message").val(),
+                            "date": date,
+                            "channel": localStorage.getItem('currentChannel'),
+                            "files": filenames
+                        });
+                        $("#message").val('');
+                        $("#file-input").val(null);
+                        $(".files").css("display", "none");
+                        $(".docs").html("");
+                        $("#load-img").css("display", "none");
+
+                    }
+                },
+                error: function (error) {
+                    // handle error
+                },
+                async: true,
+                data: formData,
+                cache: false,
+                contentType: false,
+                processData: false,
+                timeout: 60000
+            });
+        };
+
+        Upload.prototype.progressHandling = function (event) {
+            var percent = 0;
+            var position = event.loaded || event.position;
+            var total = event.total;
+            var progress_bar_id = "#progress-wrp";
+            if (event.lengthComputable) {
+                percent = Math.ceil(position / total * 100);
+            }
+            // update progressbars classes so it fits your code
+            $(progress_bar_id + " .progress-bar").css("width", +percent + "%");
+            $(progress_bar_id + " .status").text(percent + "%");
+        };
+
+        $(".send-btn").on('click', function () {
+            let message = $("#message").val();
+            let files = $("#file-input").val();
+            if (files) {
+                filenames = []
+                numOfFiles = $("#file-input").get(0).files.length;
+                file_counter = 0;
+                for (let i = 0; i < $("#file-input").get(0).files.length; ++i) {
+                    var file = $("#file-input")[0].files[i];
+                    var upload = new Upload(file);
+                    upload.doUpload();
+                    filenames.push(file.name);
+                }
+                $("#load-img").css("display", "block");
+            } else if (message === "") {
+                return;
+            } else {
+                let user = localStorage.getItem('username');
+                let date = new Date();
+                let day = date.getDate();
+                let month = months[date.getMonth()];
+                let hours = date.getHours();
+                let minutes = date.getMinutes();
+
+                if (minutes / 10 < 1) {
+                    date = `${day} ${month}  ${hours}:0${minutes}`;
+                } else {
+                    date = `${day} ${month}  ${hours}:${minutes}`;
+                }
+
+                socket.emit('send message', {
+                    "username": localStorage.getItem('username'),
+                    "text": $("#message").val(),
+                    "date": date,
+                    "channel": localStorage.getItem('currentChannel'),
+                    "files": []
+                });
+                $("#message").val('');
+            }
+        });
+
+        $("#message").keyup(function (e) {
+            var code = e.which;
+            if (code == 13) {
+                let message = $("#message").val();
+                let files = $("#file-input").val();
+                filenames = []
+                if (files) {
+                    numOfFiles = $("#file-input").get(0).files.length;
+                    file_counter = 0;
+                    for (let i = 0; i < $("#file-input").get(0).files.length; ++i) {
+                        var file = $("#file-input")[0].files[i];
+                        var upload = new Upload(file);
+                        upload.doUpload();
+                        filenames.push(file.name);
+                    }
+                    $("#load-img").css("display", "block");
+                } else if (message === "") {
+                    return;
+                } else {
+                    let user = localStorage.getItem('username');
+                    let date = new Date();
+                    let day = date.getDate();
+                    let month = months[date.getMonth()];
+                    let hours = date.getHours();
+                    let minutes = date.getMinutes();
+
+                    if (minutes / 10 < 1) {
+                        date = `${day} ${month}  ${hours}:0${minutes}`;
+                    } else {
+                        date = `${day} ${month}  ${hours}:${minutes}`;
+                    }
+
+                    socket.emit('send message', {
+                        "username": localStorage.getItem('username'),
+                        "text": $("#message").val(),
+                        "date": date,
+                        "channel": localStorage.getItem('currentChannel'),
+                        "files": []
+                    });
+
+                    $("#message").val('');
+                }
+            }
+
+        });
+
+        $('.menu-btn').on('click', function (e) {
+            e.preventDefault();
+            $('.menu').toggleClass('menu_active');
+            $('.content').toggleClass('content_active');
+        });
+
+        $("#file-input").change(function () {
+            $(".files").css("display", "block");
+            $(".docs").html("");
+            var names = [];
+            for (var i = 0; i < $(this).get(0).files.length; ++i) {
+                names.push($(this).get(0).files[i].name);
+                $(".docs").append(`<p><i class="fas fa-file-upload"></i> ${$(this).get(0).files[i].name}</p>`);
+            }
+
+        });
+
+        $("#close-files").click(function () {
+            $(".docs").html("");
+            $("#file-input").val(null);
+            $(".files").css("display", "none");
+        });
+
+        $("#public-channels").on('click', 'h6', function (e) {
+            if (!$(this).hasClass("channel-active")) {
+                $(".channel-active").removeClass("channel-active");
+                $(this).addClass("channel-active");
+                localStorage.setItem('currentChannel', $(this).html());
+
+                let date = new Date();
+                let day = date.getDate();
+                let month = months[date.getMonth()];
+                let hours = date.getHours();
+                let minutes = date.getMinutes();
+                if (minutes / 10 < 1) {
+                    date = `${day} ${month}  ${hours}:0${minutes}`;
+                } else {
+                    date = `${day} ${month}  ${hours}:${minutes}`;
+                }
+
+                socket.emit('send message', {
+                    "connection": true,
+                    "channel": localStorage.getItem("currentChannel"),
+                    "username": localStorage.getItem('username'),
+                    "date": date
+                });
+
+                socket.emit('get channel story', {
+                    "channel": localStorage.getItem("currentChannel"),
+                    "username": localStorage.getItem('username'),
+                });
+            }
+
+            if ($(".menu-btn").css("display") != "none") {
+                $('.menu').toggleClass('menu_active');
+                $('.content').toggleClass('content_active');
+            }
+            e.preventDefault();
+        });
+
+        $(".add-public-channel").click(function () {
+            if ($("#public-channel-input").val() == "") {
+                return;
+            }
+            let channel = "#" + $("#public-channel-input").val();
+            $("#public-channel-input").val("");
+
+            socket.emit('add channel', {
+                "channel": channel,
+            });
+        });
+
+        $("#public-channel-input").keyup(function (e) {
+            var code = e.which;
+            if (code == 13) {
+                if ($("#public-channel-input").val() == "") {
+                    return;
+                }
+                let channel = "#" + $("#public-channel-input").val();
+                $("#public-channel-input").val("");
+
+                socket.emit('add channel', {
+                    "channel": channel,
+                });
+            }
+        });
+
+        document.addEventListener('touchstart', handleTouchStart, false);
+        document.addEventListener('touchmove', handleTouchMove, false);
+
+        var xDown = null;
+        var yDown = null;
+
+        function getTouches(evt) {
+            return evt.touches ||             // browser API
+                evt.originalEvent.touches; // jQuery
+        }
+
+        function handleTouchStart(evt) {
+            const firstTouch = getTouches(evt)[0];
+            xDown = firstTouch.clientX;
+            yDown = firstTouch.clientY;
+        };
+
+        function handleTouchMove(evt) {
+            if (!xDown || !yDown) {
+                return;
+            }
+
+            var xUp = evt.touches[0].clientX;
+            var yUp = evt.touches[0].clientY;
+
+            var xDiff = xDown - xUp;
+            var yDiff = yDown - yUp;
+
+            if (Math.abs(xDiff) > Math.abs(yDiff)) {/*most significant*/
+                if (xDiff > 0) {
+                    if ($(".menu-btn").css("display") != "none") {
+                        $('.menu').toggleClass('menu_active');
+                        $('.content').toggleClass('content_active');
+                    }
+                } else {
+                    if ($(".menu-btn").css("display") != "none") {
+                        $('.menu').toggleClass('menu_active');
+                        $('.content').toggleClass('content_active');
+                    }
+                }
+                {# else {#}
+                {#    if (yDiff > 0) {#}
+                {#        /* up swipe */#}
+                {#    } else {#}
+                {#        /* down swipe */#}
+                {#    }#}
+            }
+            /* reset values */
+            xDown = null;
+            yDown = null;
+        };
+
+    });
+</script>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+</body>
+</html>
